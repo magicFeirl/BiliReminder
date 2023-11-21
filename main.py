@@ -5,7 +5,10 @@ import requests
 import pytz
 
 from app import ntfy
+from app import db
+
 import config
+
 
 def get(url, params, json=True, **kwargs):
     headers = {
@@ -57,7 +60,7 @@ def format_live_message(room_id: str):
     message = f'{title}\n直播状态:{LIVE_STATUS_DICT[live_status]}\n时间(UTC+8) {now}'.encode(
         'utf-8')
 
-    return {
+    return live_status, {
         'message': message,
         'headers': {
             'Title': f'{username}开播了'.encode(),
@@ -68,10 +71,17 @@ def format_live_message(room_id: str):
 
 
 def main():
+
+    jdata = db.load_db()
+
     for room_id in config.LIVE_ROOM_ID_LIST:
-        content = format_live_message(room_id=room_id)
-        ntfy.send('ac8888', **content)
-        print(content)
+        live_status, content = format_live_message(room_id=room_id)
+        
+        if live_status == 1:
+            ntfy.send('ac8888', **content)
+            print(content)
+
+        jdata[room_id]['live_status'] = live_status
 
 
 main()
