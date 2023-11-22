@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import requests
-
 import pytz
 
 from app import ntfy
@@ -76,12 +75,17 @@ def main():
 
     for room_id in config.LIVE_ROOM_ID_LIST:
         live_status, content = format_live_message(room_id=room_id)
+        pre_live_status = jdata[room_id]['live_status']
         
-        if live_status == 1:
+        if live_status == 1 and pre_live_status != 1:
             ntfy.send('ac8888', **content)
             print(content)
 
         jdata[room_id]['live_status'] = live_status
+        jdata[room_id]['last_check'] = str(datetime.now())
+
+    # python dict 的 key -> value 没变不会触发 __setitem__，导致数据没有更新，需要用时间戳强制触发一次
+    jdata['update_timestamp'] = datetime.now().timestamp()
 
 
 main()

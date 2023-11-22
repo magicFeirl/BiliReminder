@@ -15,7 +15,7 @@ class ReactiveDict(dict):
     def __setitem__(self, __key: any, __value: any) -> None:
         data = super().__setitem__(__key, __value)
 
-        with open('test.json', 'w', encoding='utf-8') as f:
+        with open(rootpath, 'w', encoding='utf-8') as f:
             json.dump(reactive_dict, f)
 
         return data
@@ -43,6 +43,3 @@ def load_db():
     return reactive_dict
 
 
-load_db()
-
-reactive_dict['a']['b']['c'] = 123
