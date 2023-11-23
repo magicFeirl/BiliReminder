@@ -1,79 +1,19 @@
-import re
 from datetime import datetime
-from string import Template
 
 from app import ntfy
 from app import db
-from app.http import get
+
+import app.bilibili.live as bili_live
 
 import config
 
 
-def get_room_master_info(uid: str):
-    api = 'https://api.live.bilibili.com/live_user/v1/Master/info'
-
-    return get(api, params={'uid': uid})
-
-
-def get_room_info(room_id: str):
-    api = 'https://api.live.bilibili.com/room/v1/Room/get_info'
-
-    return get(api, params={'room_id': room_id})
-
-
-def format_live_message(room_id: str):
-    resp = get_room_info(room_id)
-
-    if resp['code'] != 0:
-        return
-
-    room_info = resp['data']
-
-    uid = room_info.get('uid')
-    live_id = str(room_info.get('room_id'))
-    title = room_info.get('title')
-    user_cover = room_info.get('user_cover')
-    live_status = room_info.get('live_status')
-    live_time = room_info.get('live_time')
-    if live_time[:4] != '0000':
-        minutes = (datetime.now() - datetime.strptime(live_time,
-                   '%Y-%m-%d %H:%M:%S')).total_seconds() / 60
-    else:
-        minutes = 0
-
-    minutes = round(minutes)
-
-    master_info_resp = get_room_master_info(uid)
-    user_info = master_info_resp['data']['info']
-    username = user_info['uname']
-
-    message = Template('''
-        $title 
-        开播时间 $live_time
-
-        $minutes 分钟前
-    ''').substitute(title=title, live_time=live_time, minutes=minutes)
-
-    message = re.sub(r'\n\s+(.)', r'\n\g<1>', message.strip())
-    actions = f'view, 看!, bilibili://live/{live_id}'.encode(
-    ) if live_status == 1 else ''
-
-    return live_status, username, {
-        'message': message.encode(),
-        'headers': {
-            'Title': f'{username}{"开" if live_status == 1 else "下"}播了'.encode(),
-            'Attach': user_cover,
-            'Tags': 'loudspeaker',
-            'Actions': actions
-        }
-    }
-
-
-def main():
+def push_bili():
     jdata = db.load_db()
 
     for room_id in config.LIVE_ROOM_ID_LIST:
-        live_status, username, content = format_live_message(room_id=room_id)
+        live_status, username, content = bili_live.format_live_message(
+            room_id=room_id)
         pre_live_status = jdata[room_id]['live_status']
 
         if live_status == 1 and pre_live_status != 1:
@@ -95,4 +35,7 @@ def main():
     jdata['update_time'] = str(datetime.now())
 
 
-main()
+if __name__ == '__main__':
+    # main()
+    # push_bili
+    pass
