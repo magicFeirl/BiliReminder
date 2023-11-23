@@ -49,6 +49,7 @@ def format_live_message(room_id: str):
     room_info = resp['data']
 
     uid = room_info.get('uid')
+    live_id =  str(room_info.get('room_id'))
     title = room_info.get('title')
     user_cover = room_info.get('user_cover')
     live_status = room_info.get('live_status')
@@ -78,7 +79,8 @@ def format_live_message(room_id: str):
         'headers': {
             'Title': f'{username}开播了'.encode(),
             'Attach': user_cover,
-            'Tags': 'loudspeaker'
+            'Tags': 'loudspeaker',
+            'Actions': f'view, 看!, bilibili://live/{live_id}'.encode()
         }
     }
 
