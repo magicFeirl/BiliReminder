@@ -73,6 +73,7 @@ def format_live_message(room_id: str):
     ''').substitute(title=title, live_time=live_time, minutes=minutes)
 
     message = re.sub(r'\n\s+(.)', r'\n\g<1>', message.strip())
+    actions = f'view, 看!, bilibili://live/{live_id}'.encode() if live_status == 1 else ''
 
     return live_status, username, {
         'message': message.encode(),
@@ -80,7 +81,7 @@ def format_live_message(room_id: str):
             'Title': f'{username}{"开" if live_status == 1 else "下"}播了'.encode(),
             'Attach': user_cover,
             'Tags': 'loudspeaker',
-            'Actions': f'view, 看!, bilibili://live/{live_id}'.encode()
+            'Actions': actions
         }
     }
 
@@ -97,7 +98,7 @@ def main():
             ntfy.send('ac8888', **content)
         elif live_status != 1 and pre_live_status == 1:
             # 下播
-            ntfy.send('ac8888', *content)
+            ntfy.send('ac8888', **content)
 
         title, message = content['headers']['Title'], content['message']
         print(title.decode('utf-8'), '\n', message.decode('utf-8'))

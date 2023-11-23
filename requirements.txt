@@ -1,1 +1,2 @@
-bilibili-api-python
+requests
+pytz
