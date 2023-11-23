@@ -77,7 +77,7 @@ def format_live_message(room_id: str):
     return live_status, username, {
         'message': message.encode(),
         'headers': {
-            'Title': f'{username}开播了'.encode(),
+            'Title': f'{username}{"开" if live_status == 1 else "下"}播了'.encode(),
             'Attach': user_cover,
             'Tags': 'loudspeaker',
             'Actions': f'view, 看!, bilibili://live/{live_id}'.encode()
@@ -93,10 +93,15 @@ def main():
         pre_live_status = jdata[room_id]['live_status']
         
         if live_status == 1 and pre_live_status != 1:
+            # 开播
             ntfy.send('ac8888', **content)
-            title, message = content['headers']['Title'], content['message']
-            print(title.decode('utf-8'), '\n', message.decode('utf-8'))
+        elif live_status != 1 and pre_live_status == 1:
+            # 下播
+            ntfy.send('ac8888', *content)
 
+        title, message = content['headers']['Title'], content['message']
+        print(title.decode('utf-8'), '\n', message.decode('utf-8'))
+        print()
 
         jdata[room_id]['live_status'] = live_status
         jdata[room_id]['last_check'] = str(datetime.now())
