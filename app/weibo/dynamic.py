@@ -33,7 +33,7 @@ def get_user_dynamics(uid: str, containerid: str = None):
         return get_dynamics(uid, containerid)
 
 
-def parse_dyanimc(card: object) -> Tuple[object, str, object] | None:
+def parse_dyanimc(card: object) -> Tuple[object, str, object]:
     """
     :returns: [微博卡片 JSON, 消息文本, ntfy 消息对象]
     """
