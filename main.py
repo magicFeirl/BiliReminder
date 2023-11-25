@@ -50,18 +50,19 @@ def push_weibo(user_id: str, channel_name: str):
         for mblog, message, ntfy_params in wb_dyanmic.parse_dyanimcs(cards):
             if not max_weibo_count:
                 break
+            max_weibo_count -= 1
 
             id = mblog['id']
             # mblog.type: 2 置顶, 0 普通
-            if jdata[NAMESPACE]['dynamic'].get('id', None) == True:
+            if jdata[NAMESPACE]['dynamic'].get(id, None) == True:
                 continue
 
             jdata[NAMESPACE]['dynamic'][id] = True
 
             ntfy.send(name=channel_name, **ntfy_params)
             print(message)
-            max_weibo_count -= 1
 
+    jdata['update_time'] = str(datetime.now())
 
 
 def main():
