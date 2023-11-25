@@ -53,15 +53,15 @@ def push_weibo(user_id: str, channel_name: str):
 
             id = mblog['id']
             # mblog.type: 2 置顶, 0 普通
-            if jdata[NAMESPACE]['dynamic'][id] == True:
-                break
+            if jdata[NAMESPACE]['dynamic'].get('id', None) == True:
+                continue
 
             jdata[NAMESPACE]['dynamic'][id] = True
 
             ntfy.send(name=channel_name, **ntfy_params)
             print(message)
-
             max_weibo_count -= 1
+
 
 
 def main():
