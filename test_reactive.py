@@ -1,5 +1,3 @@
-from app.db import ReactiveDict
+import app.db as db 
 
-r = ReactiveDict({})
-
-r['a']['b']['c'] = 1
+print(db.load_db())
