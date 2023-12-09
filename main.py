@@ -67,10 +67,12 @@ def push_weibo(user_id: str, channel_name: str):
 
 def main():
     for room_id in config.LIVE_ROOM_ID_LIST:
-        push_bili(room_id=room_id, channel_name='ac8888')
+        id, channel_name = room_id['id'], room_id['channel']
+        push_bili(room_id=id, channel_name=channel_name)
 
     for weibo_user_id in config.WEIBO_USER_ID_LIST:
-        push_weibo(weibo_user_id, channel_name='ac8888')
+        id, channel_name = weibo_user_id['id'], weibo_user_id['channel']
+        push_weibo(id, channel_name=channel_name)
 
 
 if __name__ == '__main__':
