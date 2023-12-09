@@ -56,7 +56,7 @@ def push_weibo(user_id: str, channel_name: str, url: str = ""):
 
             id = mblog['id']
 
-            table = jdata[NAMESPACE][channel_name][url]['dynamic']
+            table = jdata[NAMESPACE][channel_name][user_id][url]['dynamic']
             # mblog.type: 2 置顶, 0 普通
             if table.get(id, None) == True:
                 continue
