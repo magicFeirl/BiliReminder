@@ -11,6 +11,7 @@ jdata = load_db()
 
 response = wb.get_user_dynamics('7618923072')
 
+print(response)
 if response['ok'] == 1:
     cards = response['data']['cards']
 
