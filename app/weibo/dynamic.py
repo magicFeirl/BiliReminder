@@ -48,9 +48,9 @@ def parse_dyanimc(card: object) -> Tuple[object, str, object]:
 
     card_id = mblog.get('id')
 
-    pic = mblog['retweeted_status']['bmiddle_pic'] if repost_type else mblog.get(
+    pic = mblog['retweeted_status'].get('bmiddle_pic') if repost_type else mblog.get(
         'bmiddle_pic')
-    pic_num = mblog['retweeted_status']['pic_num'] if repost_type else mblog.get(
+    pic_num = mblog['retweeted_status'].get('pic_num') if repost_type else mblog.get(
         'pic_num')
     blog_text = mblog['text'].replace('<br />', '\n')
 

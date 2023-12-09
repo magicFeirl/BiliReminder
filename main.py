@@ -38,7 +38,7 @@ def push_bili(room_id: str, channel_name: str):
 def push_weibo(user_id: str, channel_name: str):
     NAMESPACE = 'weibo'
     # 最多只发送最新的 3 条微博
-    max_weibo_count = 3
+    max_weibo_count = 6
 
     jdata = db.load_db()
 
@@ -60,7 +60,7 @@ def push_weibo(user_id: str, channel_name: str):
             jdata[NAMESPACE]['dynamic'][id] = True
 
             ntfy.send(name=channel_name, **ntfy_params)
-            print(message)
+            print(message, id)
 
     jdata['update_time'] = str(datetime.now())
 
