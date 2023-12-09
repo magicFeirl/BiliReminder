@@ -28,9 +28,9 @@ def push_bili(room_id: str, channel_name: str, url: str = ""):
     print(title.decode('utf-8'), '\n', message.decode('utf-8'))
     print()
 
-    jdata[room_id]['live_status'] = live_status
-    jdata[room_id]['last_check'] = str(datetime.now())
-    jdata[room_id]['username'] = username
+    jdata['bili'][channel_name][url][room_id]['live_status'] = live_status
+    jdata['bili'][channel_name][url][room_id]['last_check'] = str(datetime.now())
+    jdata['bili'][channel_name][url][room_id]['username'] = username
 
     # python dict 的 key -> value 没变不会触发 __setitem__，导致数据没有更新，需要用时间戳强制触发一次
     jdata['update_time'] = str(datetime.now())
@@ -59,7 +59,7 @@ def push_weibo(user_id: str, channel_name: str, url: str = ""):
                 continue
 
             ntfy_params['url'] = url
-            jdata[NAMESPACE]['dynamic'][id] = True
+            jdata[NAMESPACE][channel_name][url]['dynamic'][id] = True
 
             ntfy.send(name=channel_name, **ntfy_params)
             print(message, id)
