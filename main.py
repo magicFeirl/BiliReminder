@@ -24,11 +24,11 @@ def push_bili(room_id: str, channel_name: str, url: str = ""):
     content['url'] = url
     if live_status == 1 and pre_live_status != 1:
         # 开播
-        # ntfy.send(channel_name, **content)
+        ntfy.send(channel_name, **content)
         pass
     elif live_status != 1 and pre_live_status == 1:
         # 下播
-        # ntfy.send(channel_name, **content)
+        ntfy.send(channel_name, **content)
         pass
 
     title, message = content['headers']['Title'], content['message']
@@ -70,7 +70,7 @@ def push_weibo(user_id: str, channel_name: str, url: str = ""):
             ntfy_params['url'] = url
             table[id] = True
 
-            # ntfy.send(name=channel_name, **ntfy_params)
+            ntfy.send(name=channel_name, **ntfy_params)
             print(message, id)
 
     jdata['update_time'] = str(datetime.now())
