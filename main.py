@@ -8,7 +8,7 @@ import app.bilibili.live as bili_live
 import config
 
 
-def push_bili(room_id: str, channel_name: str):
+def push_bili(room_id: str, channel_name: str, url: str = ""):
     jdata = db.load_db()
 
     live_status, username, content = bili_live.format_live_message(
@@ -16,6 +16,7 @@ def push_bili(room_id: str, channel_name: str):
 
     pre_live_status = jdata[room_id]['live_status']
 
+    content['url'] = url
     if live_status == 1 and pre_live_status != 1:
         # 开播
         ntfy.send(channel_name, **content)
@@ -35,10 +36,10 @@ def push_bili(room_id: str, channel_name: str):
     jdata['update_time'] = str(datetime.now())
 
 
-def push_weibo(user_id: str, channel_name: str):
+def push_weibo(user_id: str, channel_name: str, url: str = ""):
     NAMESPACE = 'weibo'
     # 最多只发送最新的 3 条微博
-    max_weibo_count = 6
+    max_weibo_count = 3
 
     jdata = db.load_db()
 
@@ -57,6 +58,7 @@ def push_weibo(user_id: str, channel_name: str):
             if jdata[NAMESPACE]['dynamic'].get(id, None) == True:
                 continue
 
+            ntfy_params['url'] = url
             jdata[NAMESPACE]['dynamic'][id] = True
 
             ntfy.send(name=channel_name, **ntfy_params)
@@ -67,12 +69,12 @@ def push_weibo(user_id: str, channel_name: str):
 
 def main():
     for room_id in config.LIVE_ROOM_ID_LIST:
-        id, channel_name = room_id['id'], room_id['channel']
-        push_bili(room_id=id, channel_name=channel_name)
+        id, channel_name, url = room_id['id'], room_id['channel'], room_id['url']
+        push_bili(room_id=id, channel_name=channel_name, url=url)
 
     for weibo_user_id in config.WEIBO_USER_ID_LIST:
-        id, channel_name = weibo_user_id['id'], weibo_user_id['channel']
-        push_weibo(id, channel_name=channel_name)
+        id, channel_name, url = weibo_user_id['id'], weibo_user_id['channel'], weibo_user_id['url']
+        push_weibo(id, channel_name=channel_name, url=url)
 
 
 if __name__ == '__main__':
