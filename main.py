@@ -14,7 +14,8 @@ def push_bili(room_id: str, channel_name: str, url: str = ""):
     live_status, username, content = bili_live.format_live_message(
         room_id=room_id)
 
-    pre_live_status = jdata[room_id]['live_status']
+    table = jdata['bili'][channel_name][url][room_id]
+    pre_live_status = table['live_status']
 
     content['url'] = url
     if live_status == 1 and pre_live_status != 1:
@@ -28,9 +29,9 @@ def push_bili(room_id: str, channel_name: str, url: str = ""):
     print(title.decode('utf-8'), '\n', message.decode('utf-8'))
     print()
 
-    jdata['bili'][channel_name][url][room_id]['live_status'] = live_status
-    jdata['bili'][channel_name][url][room_id]['last_check'] = str(datetime.now())
-    jdata['bili'][channel_name][url][room_id]['username'] = username
+    table['live_status'] = live_status
+    table['last_check'] = str(datetime.now())
+    table['username'] = username
 
     # python dict 的 key -> value 没变不会触发 __setitem__，导致数据没有更新，需要用时间戳强制触发一次
     jdata['update_time'] = str(datetime.now())
@@ -54,12 +55,14 @@ def push_weibo(user_id: str, channel_name: str, url: str = ""):
             max_weibo_count -= 1
 
             id = mblog['id']
+
+            table = jdata[NAMESPACE][channel_name][url]['dynamic']
             # mblog.type: 2 置顶, 0 普通
-            if jdata[NAMESPACE]['dynamic'].get(id, None) == True:
+            if table.get(id, None) == True:
                 continue
 
             ntfy_params['url'] = url
-            jdata[NAMESPACE][channel_name][url]['dynamic'][id] = True
+            table[id] = True
 
             ntfy.send(name=channel_name, **ntfy_params)
             print(message, id)

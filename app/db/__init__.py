@@ -33,13 +33,17 @@ def init_db(overwrite: bool = False):
 def load_db():
     global reactive_dict
 
+    def obj_hook(dct):
+        return ReactiveDict(dct)
+
+    if reactive_dict:
+        return reactive_dict
+
     try:
         with open(rootpath, 'r', encoding="utf-8") as f:
-            reactive_dict = ReactiveDict(json.load(f))
+            reactive_dict = ReactiveDict(json.load(f, object_hook=obj_hook))
     except FileNotFoundError:
         init_db(True)
         reactive_dict = ReactiveDict({})
 
     return reactive_dict
-
-
