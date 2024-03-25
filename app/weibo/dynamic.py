@@ -53,6 +53,13 @@ def parse_dyanimc(card: object) -> Tuple[object, str, object]:
     pic_num = mblog['retweeted_status'].get('pic_num') if repost_type else mblog.get(
         'pic_num')
     blog_text = mblog['text'].replace('<br />', '\n')
+    is_long_text = mblog.get('isLongText')
+    if is_long_text:
+        long_text_result = get(f'https://m.weibo.cn/statuses/extend?id={card_id}')['data']
+        if long_text_result['ok'] == 1:
+            blog_text = long_text_result['longTextContent']
+
+    blog_text = re.sub(r'<[^>]+>', '', blog_text)
 
     """
     e.g.:

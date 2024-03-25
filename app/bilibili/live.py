@@ -51,7 +51,7 @@ def format_live_message(room_id: str):
     ''').substitute(title=title, live_time=live_time, minutes=minutes)
 
     message = re.sub(r'\n\s+(.)', r'\n\g<1>', message.strip())
-    actions = f'view, 看!, bilibili://live/{live_id}'.encode(
+    actions = f'view, 看!, bilibili://live/{live_id}; view, 看(h5)!, https://live.bilibili.com/h5/{live_id}'.encode(
     ) if live_status == 1 else ''
 
     return live_status, username, {
