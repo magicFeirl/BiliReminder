@@ -45,7 +45,7 @@ def parse_dyanimc(card: object) -> Tuple[object, str, object]:
     repost_type = mblog.get('repost_type')
     action_type = '转发' if repost_type else '发布'
     tags = 'link' if repost_type else 'writing_hand'
-
+    region_name = mblog.get('region_name')
     card_id = mblog.get('id')
 
     pic = mblog['retweeted_status'].get('bmiddle_pic') if repost_type else mblog.get(
@@ -67,12 +67,16 @@ def parse_dyanimc(card: object) -> Tuple[object, str, object]:
 
     xxxx(微博内容)
 
+    发布于xx
+
     1张图片
     """
     text = f"""
           {blog_text}
           {mblog['created_at']}
-          
+
+          {region_name}          
+
           {str(pic_num) + "张图片" if pic else ""}
       """
 
