@@ -9,4 +9,9 @@ def get(url, params=None, json=True, **kwargs):
 
     r = requests.get(url, params=params, headers=headers, **kwargs)
 
-    return r.json() if json else r.text
+    try:
+        return r.json() if json else r.text
+    except Exception as e:
+        print('Decode json error:', e)
+        print(r.text)
+        raise e
