@@ -1,6 +1,9 @@
 # config.example.py
 # Configuration file for BiliReminder
 
+# Your ntfy auth token
+AUTH_TOKEN = 'tk_i121321'
+
 # List of live room IDs, with associated ntfy channel name and backend push URL.
 # Example:
 # - id: Live room ID of the Bilibili channel
